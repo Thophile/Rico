@@ -4,27 +4,31 @@
 
 from log import log
 import macro
-import speech_recognition
-import pyttsx3
+import speech_recognition as sr
+import time
 
-reco = speech_recognition.Recognizer()
+DEBUG = True
+r = sr.Recognizer()
 
-while True:
+# Words that sphinx should listen closely for. 0-1 is the sensitivity
+# of the wake word.
+
+source = sr.Microphone()
+
+def callback(recognizer, audio):  # this is called from the background thread
 
     try:
+        speech_as_text = recognizer.recognize_google(audio, language='fr',pfilter=0)
+        log(speech_as_text)
+        if DEBUG: print(speech_as_text)
 
-        with speech_recognition.Microphone() as mic:
+        # Look for your "rico" keyword in speech_as_text
+        if "rico" in speech_as_text or "Rigaud" or "frigo":
+            macro.parse(speech_as_text)
 
-            reco.adjust_for_ambient_noise(mic, duration=0.2)
-            audio = reco.listen(mic)
+    except sr.UnknownValueError:
+        if DEBUG: print("Je n'ai pas compris")
 
-            text = reco.recognize_google(audio, language='fr')
-            text = text.lower()
 
-            macro.parse(text)
-            print(text)
-            log(text)
-            
-    except speech_recognition.UnknownValueError:
-        reco = speech_recognition.Recognizer()
-            
+r.listen_in_background(source, callback, phrase_time_limit=6)
+while True : time.sleep(0.1)
