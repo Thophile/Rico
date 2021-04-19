@@ -1,0 +1,37 @@
+{
+    "start": {
+        "keywords": [
+            "Rigaud",
+            "tricot",
+            "frigo",
+            "rico"
+        ],
+        "response": [
+        ]
+    },
+    "unknown": {
+        "keywords": [
+        ],
+        "response": [
+            "Pouvez vous répéter"
+        ]
+    },
+    "navigate": {
+        "keywords": [
+            "va sur"
+        ],
+        "response": [
+            "D'accord",
+            "J'ouvre ça",
+            "sa marche"
+        ]
+    },
+    "run": {
+        "keywords": [
+            "lance"
+        ],
+        "response": [
+            "Je lance ça"
+        ]
+    }
+}

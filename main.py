@@ -2,33 +2,52 @@
 # Author : Thophile
 # Date : 10/10/2021
 
-from log import log
-import macro
+# External
 import speech_recognition as sr
+import pyttsx3 as tts
 import time
 
+# File import
+from mint import *
+
+from log import log
+
+# Env const
 DEBUG = True
+
+# Init
 r = sr.Recognizer()
+mic = sr.Microphone()
 
-# Words that sphinx should listen closely for. 0-1 is the sensitivity
-# of the wake word.
+def listen(bool):
+    global r
+    done = False
 
-source = sr.Microphone()
+    while not done or bool:
+        with sr.Microphone() as mic :
 
-def callback(recognizer, audio):  # this is called from the background thread
-
-    try:
-        speech_as_text = recognizer.recognize_google(audio, language='fr',pfilter=0)
-        log(speech_as_text)
-        if DEBUG: print(speech_as_text)
-
-        # Look for your "rico" keyword in speech_as_text
-        if "rico" in speech_as_text or "Rigaud" or "frigo":
-            macro.parse(speech_as_text)
-
-    except sr.UnknownValueError:
-        if DEBUG: print("Je n'ai pas compris")
+            try:
+                audio = r.listen(mic, timeout=3, phrase_time_limit=5)
 
 
-r.listen_in_background(source, callback, phrase_time_limit=6)
-while True : time.sleep(0.1)
+                txt = r.recognize_google(audio, language='fr-FR')
+                print(txt)
+
+                if match_intent(txt,"start"):
+                    txt = get_parameters(txt,"start")
+
+                    # Find function to call from text
+                    intent = find_intent(txt)
+                    print(f"intent : {intent}")
+                    binding[intent](get_parameters(txt, intent))
+                    done = True
+
+            except sr.WaitTimeoutError:
+                if DEBUG : print("timeout")
+                pass
+            except sr.UnknownValueError:
+                r = sr.Recognizer()
+            except KeyError:
+                binding["unknown"]()
+
+listen(True)
