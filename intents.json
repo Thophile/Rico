@@ -1,12 +1,27 @@
 {
     "start": {
         "keywords": [
-            "Rigaud",
+            "rigaud",
             "tricot",
             "frigo",
+            "brico",
             "rico"
         ],
         "response": [
+        ]
+    },
+    
+    "stop": {
+        "keywords": [
+            "stop",
+            "arrete toi",
+            "coupe le micro",
+            "passe en mode veille"
+        ],
+        "response": [
+            "D'accord",
+            "OK",
+            "sa marche"
         ]
     },
     "unknown": {
@@ -14,6 +29,15 @@
         ],
         "response": [
             "Pouvez vous répéter"
+        ]
+    },
+    "search": {
+        "keywords": [
+            "cherche"
+        ],
+        "response": [
+            "D'accord",
+            "sa marche"
         ]
     },
     "navigate": {

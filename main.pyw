@@ -3,9 +3,11 @@
 # Date : 10/10/2021
 
 # External
+from infi.systray import SysTrayIcon
 import speech_recognition as sr
 import pyttsx3 as tts
 import time
+import threading
 
 # File import
 from mint import *
@@ -16,14 +18,17 @@ from log import log
 DEBUG = True
 
 # Init
-r = sr.Recognizer()
-mic = sr.Microphone()
+running_in_bkg = True
+is_listenning = False
 
-def listen(bool):
-    global r
+def listen(initiate):
+    global is_listenning
+    r = sr.Recognizer()
     done = False
 
-    while not done or bool:
+    while not done or initiate:
+        if not is_listenning : break
+
         with sr.Microphone() as mic :
 
             try:
@@ -39,6 +44,7 @@ def listen(bool):
                     # Find function to call from text
                     intent = find_intent(txt)
                     print(f"intent : {intent}")
+                    print(f"parameter {get_parameters(txt, intent)}")
                     binding[intent](get_parameters(txt, intent))
                     done = True
 
@@ -49,5 +55,25 @@ def listen(bool):
                 r = sr.Recognizer()
             except KeyError:
                 binding["unknown"]()
+            except BreakException:
+                break
 
-listen(True)
+def toggle(systray):
+    global is_listenning
+
+    is_listenning = not is_listenning
+    if is_listenning : 
+        t = threading.Thread(name="listening", target=listen, args=[True])
+        t.start()
+
+def terminate(systray):
+    global running_in_bkg, is_listenning
+    running_in_bkg = False
+    if is_listenning: is_listenning = False
+
+menu_options = (("Toggle", None, toggle),)
+systray = SysTrayIcon("icon.ico", "Rico", menu_options, on_quit=terminate)
+systray.start()
+
+while running_in_bkg : time.sleep(0.1)
+
