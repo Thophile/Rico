@@ -56,6 +56,7 @@ def listen(initiate):
             except KeyError:
                 binding["unknown"]()
             except BreakException:
+                is_listenning = False
                 break
 
 def toggle(systray):
@@ -68,12 +69,15 @@ def toggle(systray):
 
 def terminate(systray):
     global running_in_bkg, is_listenning
-    running_in_bkg = False
-    if is_listenning: is_listenning = False
+    running_in_bkg = is_listenning = False
 
-menu_options = (("Toggle", None, toggle),)
-systray = SysTrayIcon("icon.ico", "Rico", menu_options, on_quit=terminate)
+
+menu_options = (("On/Off", None, toggle),)
+systray = SysTrayIcon("rico_logo.ico", "Rico", menu_options, on_quit=terminate)
 systray.start()
 
 while running_in_bkg : time.sleep(0.1)
+
+# Killing tray icon after end of other thread
+systray.shutdown()
 
