@@ -8,6 +8,8 @@ import speech_recognition as sr
 import pyttsx3 as tts
 import time
 import threading
+import os
+import subprocess
 
 # File import
 from mint import *
@@ -36,20 +38,20 @@ def listen(initiate):
 
 
                 txt = r.recognize_google(audio, language='fr-FR')
-                print(txt)
+                log(txt)
 
                 if match_intent(txt,"start"):
                     txt = get_parameters(txt,"start")
 
                     # Find function to call from text
                     intent = find_intent(txt)
-                    print(f"intent : {intent}")
-                    print(f"parameter {get_parameters(txt, intent)}")
+                    log(f"intent : {intent}")
+                    log(f"parameter {get_parameters(txt, intent)}")
                     binding[intent](get_parameters(txt, intent))
                     done = True
 
             except sr.WaitTimeoutError:
-                if DEBUG : print("timeout")
+                if DEBUG : log("timeout")
                 pass
             except sr.UnknownValueError:
                 r = sr.Recognizer()
@@ -71,8 +73,11 @@ def terminate(systray):
     global running_in_bkg, is_listenning
     running_in_bkg = is_listenning = False
 
+def open_log(systray):
+    path = os.path.join(os.getenv('APPDATA') , 'Rico', 'log.txt')
+    subprocess.Popen(f'explorer /select,\"{path}\"')
 
-menu_options = (("On/Off", None, toggle),)
+menu_options = (("On/Off", None, toggle),("Open logs", None, open_log),)
 systray = SysTrayIcon("rico_logo.ico", "Rico", menu_options, on_quit=terminate)
 systray.start()
 

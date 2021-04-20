@@ -6,6 +6,7 @@ import webbrowser
 import pyttsx3 as tts
 import httplib2
 import threading
+from log import log
 
 
 with open('intents.json',encoding='utf-8') as f:
@@ -68,17 +69,17 @@ def navigate(parameter=""):
         if d in parameter and d != "":
             continue
         try:
-            print(f"trying : https://www.{parameter}{d}")
+            log(f"trying : https://www.{parameter}{d}")
             url = f"http://www.{parameter}{d}"
             resp = h.request(url, 'HEAD')
 
-            print(resp[0]['status'])
+            log(resp[0]['status'])
             if int(resp[0]['status']) < 400 :
                 webbrowser.open(url)
                 found = True
                 break
         except Exception as e:
-            print(e)
+            log(e)
 
     if not found : webbrowser.open('https://www.google.com/search?client=firefox-b-d&q=' + parameter)
 

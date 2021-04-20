@@ -6,7 +6,7 @@ def log(msg):
     try:
         f = open(path, 'a')
         str(datetime.now())
-        f.write(str(datetime.now()) + ' : ' + msg + '\n')
+        f.write(str(datetime.now()) + ' : ' + str(msg) + '\n')
         f.close()
     except (IOError, FileNotFoundError):
         os.makedirs(os.path.dirname(path))
