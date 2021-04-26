@@ -1,11 +1,13 @@
 import json
 import random
-
+import winapps
 import re
 import webbrowser
 import pyttsx3 as tts
 import httplib2
 import threading
+import os,fnmatch
+import subprocess
 from log import log
 
 
@@ -84,20 +86,33 @@ def navigate(parameter=""):
     if not found : webbrowser.open('https://www.google.com/search?client=firefox-b-d&q=' + parameter)
 
 def run(parameter=""):
+    speak([pick_response("run")])
+    parameter = parameter.replace(' ','')
 
-    speaker.say(pick_response("run"))
-    speaker.runAndWait()
+    # Searching global and user specific install
+    def search(root,parameter):
+        for root, dirs, files in os.walk(root):
+            for name in files:
+                if fnmatch.fnmatch(name, '*.lnk') and re.search(parameter,name,re.IGNORECASE):
+                    os.startfile(os.path.join(root,name))
+                    break
 
-binding = {"start": start,"unknown": unknown, "navigate": navigate, "stop": stop}
+    search(os.path.join(os.getenv('APPDATA'),'Microsoft\Windows\Start Menu\Programs'), parameter)
+    search('C:\ProgramData\Microsoft\Windows\Start Menu\Programs', parameter)
+
+binding = {"start": start,"unknown": unknown, "navigate": navigate, "stop": stop, "run": run}
 
 # Tts
 def speak(txts):
     speaker = tts.init()
-    speaker.setProperty('rate', 210)
+    speaker.setProperty('rate', 200)
     voice = speaker.getProperty('voices')[0] # the french voice
     speaker.setProperty('voice', voice.id)
 
     for txt in txts:
         speaker.say(txt)
     speaker.runAndWait()
+
+# Test
+run('firefox')
 
