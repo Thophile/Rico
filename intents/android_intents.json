@@ -12,7 +12,6 @@
         "response": [
         ]
     },
-    
     "stop": {
         "keywords": [
             "stop",
@@ -31,33 +30,6 @@
         ],
         "response": [
             "Pouvez vous répéter"
-        ]
-    },
-    "search": {
-        "keywords": [
-            "cherche"
-        ],
-        "response": [
-            "D'accord",
-            "sa marche"
-        ]
-    },
-    "navigate": {
-        "keywords": [
-            "va sur"
-        ],
-        "response": [
-            "D'accord",
-            "J'ouvre ça",
-            "sa marche"
-        ]
-    },
-    "run": {
-        "keywords": [
-            "lance"
-        ],
-        "response": [
-            "Je lance ça"
         ]
     }
 }

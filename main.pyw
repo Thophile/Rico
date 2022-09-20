@@ -12,9 +12,10 @@ import os
 import subprocess
 
 # File import
-from mint import *
-
+import macros.windows_macro as windows_macro
+import macros.android_macro as android_macro
 from log import log
+
 
 # Env const
 DEBUG = True
